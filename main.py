@@ -10,6 +10,7 @@ class CSV:
     COLUMNS = ["date", "amount", "category", "description"]
     FORMAT = "%d-%m-%Y"
 
+    # Method to get/create CSV
     @classmethod
     def initialize_csv(cls):
         try:
@@ -18,6 +19,7 @@ class CSV:
             df = pd.DataFrame(columns=cls.COLUMNS)
             df.to_csv(cls.CSV_FILE, index=False)
 
+    # Method to add entry
     @classmethod
     def add_entry(cls, date, amount, category, description):
         # Use an empty string if description is None or empty
@@ -35,6 +37,7 @@ class CSV:
             writer.writerow(new_entry)
         print("Entry added successfully")
 
+    # Method to display transaction
     @classmethod
     def get_transactions(cls, start_date, end_date):
         df = pd.read_csv(cls.CSV_FILE)
@@ -42,6 +45,7 @@ class CSV:
         start_date = datetime.strptime(start_date, CSV.FORMAT)
         end_date = datetime.strptime(end_date, CSV.FORMAT)
 
+        # Filter
         mask = (df["date"] >= start_date) & (df["date"] <= end_date)
         filtered_df = df.loc[mask]
 
@@ -61,6 +65,7 @@ class CSV:
                 )
             )
 
+            # Get totals
             total_income = filtered_df[filtered_df["category"] == "Income"]["amount"].astype(float).sum()
             total_expense = filtered_df[filtered_df["category"] == "Expense"]["amount"].astype(float).sum()
             print("\nSummary:")
@@ -71,7 +76,7 @@ class CSV:
         return filtered_df
 
 
-
+# Add transaction
 def add():
     CSV.initialize_csv()
     date = get_date(
@@ -83,7 +88,7 @@ def add():
     description = get_description()
     CSV.add_entry(date, amount, category, description)
 
-
+# Method to create graph
 def plot_transactions(df):
     df.set_index("date", inplace=True)
 
